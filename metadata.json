@@ -1,0 +1,8 @@
+{
+  "name": "TribuMénage",
+  "description": "Application familiale complète et ludique pour la gestion du foyer : répartition des corvées, garde-manger et courses, budget commun, carnet d'entretien et récompenses pour les enfants.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
