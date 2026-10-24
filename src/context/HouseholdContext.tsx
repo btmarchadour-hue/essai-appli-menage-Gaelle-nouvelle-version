@@ -12,6 +12,14 @@ import {
   INITIAL_SEASONAL_TASKS,
 } from '../data/initialData';
 import { triggerChoreConfetti } from '../utils/confetti';
+import { getRandomChuckNorrisQuote } from '../data/chuckNorrisQuotes';
+
+export interface CongratulationEvent {
+  id: string;
+  taskTitle: string;
+  quote: string;
+  timestamp: number;
+}
 
 interface HouseholdState {
   tasks: ChoreTask[];
@@ -28,6 +36,12 @@ interface HouseholdContextType extends HouseholdState {
   // Alerts
   alerts: HouseholdAlert[];
   criticalAlertsCount: number;
+
+  // Congratulation (Chuck Norris fact)
+  congratulation: CongratulationEvent | null;
+  dismissCongratulation: () => void;
+  shuffleCongratulationQuote: () => void;
+  triggerCongratulations: (taskTitle?: string) => void;
   
   // Tasks & Routines
   toggleTask: (taskId: string) => void;
@@ -82,6 +96,33 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       selectedDate: TODAY_STR,
     };
   });
+
+  // Chuck Norris congratulations toast state
+  const [congratulation, setCongratulation] = useState<CongratulationEvent | null>(null);
+
+  const triggerCongratulations = (taskTitle: string = 'Une corvée du foyer') => {
+    triggerChoreConfetti();
+    setCongratulation({
+      id: `cong-${Date.now()}-${Math.random()}`,
+      taskTitle,
+      quote: getRandomChuckNorrisQuote(),
+      timestamp: Date.now(),
+    });
+  };
+
+  const dismissCongratulation = () => {
+    setCongratulation(null);
+  };
+
+  const shuffleCongratulationQuote = () => {
+    setCongratulation(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        quote: getRandomChuckNorrisQuote(prev.quote),
+      };
+    });
+  };
 
   // Save changes to localStorage
   useEffect(() => {
@@ -206,7 +247,7 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
       const willBeCompleted = !target.completed;
       if (willBeCompleted) {
-        triggerChoreConfetti();
+        triggerCongratulations(target.title);
       }
 
       return {
@@ -232,7 +273,7 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const task = prev.tasks.find(t => t.id === taskId);
       if (!task || !task.intervalDays) return prev;
 
-      triggerChoreConfetti();
+      triggerCongratulations(task.title);
 
       // Calculate next due date: TODAY + intervalDays
       const nextDate = new Date(TODAY_STR);
@@ -350,20 +391,26 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const recordMaintenance = (id: string) => {
+    const eq = state.equipment.find(item => item.id === id);
+    if (eq) {
+      triggerCongratulations(`Entretien : ${eq.name}`);
+    } else {
+      triggerChoreConfetti();
+    }
+
     setState(prev => ({
       ...prev,
-      equipment: prev.equipment.map(eq => {
-        if (eq.id === id) {
+      equipment: prev.equipment.map(item => {
+        if (item.id === id) {
           return {
-            ...eq,
+            ...item,
             lastMaintenanceDate: TODAY_STR,
             urgent: false,
           };
         }
-        return eq;
+        return item;
       }),
     }));
-    triggerChoreConfetti();
   };
 
   const deleteEquipment = (id: string) => {
@@ -374,12 +421,16 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const toggleSeasonalTask = (id: string) => {
+    const target = state.seasonalTasks.find(item => item.id === id);
+    if (target && !target.completed) {
+      triggerCongratulations(target.title);
+    }
+
     setState(prev => ({
       ...prev,
       seasonalTasks: prev.seasonalTasks.map(st => {
         if (st.id === id) {
           const willBeDone = !st.completed;
-          if (willBeDone) triggerChoreConfetti();
           return {
             ...st,
             completed: willBeDone,
@@ -438,6 +489,10 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setSelectedDate,
         alerts,
         criticalAlertsCount,
+        congratulation,
+        dismissCongratulation,
+        shuffleCongratulationQuote,
+        triggerCongratulations,
         toggleTask,
         addTask,
         editTask,

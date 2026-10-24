@@ -90,7 +90,7 @@ export const HomeCareView: React.FC<HomeCareViewProps> = ({ onOpenAddEquipment }
     <div className="space-y-6">
       
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-teal-700 via-slate-800 to-indigo-900 rounded-2xl p-6 text-white shadow-md">
+      <div className="bg-gradient-to-r from-stone-800 via-amber-900 to-emerald-900 rounded-3xl p-6 text-white shadow-md shadow-stone-950/15">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -99,7 +99,7 @@ export const HomeCareView: React.FC<HomeCareViewProps> = ({ onOpenAddEquipment }
                 Carnet d'Entretien & Checklists Maison
               </h1>
             </div>
-            <p className="text-teal-100 text-sm max-w-2xl">
+            <p className="text-amber-100 text-sm max-w-2xl">
               Préservez vos appareils, anticipez les pannes et gardez une maison saine au fil des 4 saisons.
             </p>
           </div>
@@ -107,7 +107,7 @@ export const HomeCareView: React.FC<HomeCareViewProps> = ({ onOpenAddEquipment }
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={onOpenAddEquipment}
-              className="flex items-center gap-2 px-4 py-2 bg-white text-slate-900 hover:bg-teal-50 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95"
+              className="flex items-center gap-2 px-4 py-2 bg-white text-stone-900 hover:bg-amber-50 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>Ajouter un Appareil</span>
@@ -119,10 +119,10 @@ export const HomeCareView: React.FC<HomeCareViewProps> = ({ onOpenAddEquipment }
         <div className="flex items-center gap-2 mt-6 pt-5 border-t border-white/20">
           <button
             onClick={() => setActiveSubTab('equipment')}
-            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               activeSubTab === 'equipment'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-teal-100 hover:bg-white/10'
+                ? 'bg-white text-stone-900 shadow-sm'
+                : 'text-amber-100 hover:bg-white/10'
             }`}
           >
             <Wrench className="w-4 h-4" />

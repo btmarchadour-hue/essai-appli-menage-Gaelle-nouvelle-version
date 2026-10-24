@@ -59,23 +59,23 @@ export const RoutinesView: React.FC<RoutinesViewProps> = ({ onOpenCreateRoutine 
     <div className="space-y-6">
       
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 rounded-2xl p-6 text-white shadow-md">
+      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-rose-600 rounded-3xl p-6 text-white shadow-md shadow-orange-950/15">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Repeat className="w-6 h-6 text-indigo-200" />
+              <Repeat className="w-6 h-6 text-amber-200" />
               <h1 className="text-xl md:text-2xl font-bold font-display tracking-tight">
                 Routines & Cadences Récurrentes du Foyer
               </h1>
             </div>
-            <p className="text-indigo-100 text-sm max-w-2xl">
+            <p className="text-amber-100 text-sm max-w-2xl">
               Automatisez les cycles réguliers de la maison : draps tous les 15 jours maxi, serviettes de bain, détartrage et grand ménage.
             </p>
           </div>
 
           <button
             onClick={onOpenCreateRoutine}
-            className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-950 hover:bg-indigo-50 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 shrink-0"
+            className="flex items-center gap-2 px-4 py-2 bg-white text-stone-900 hover:bg-amber-50 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 shrink-0 cursor-pointer"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
             <span>Créer une Routine</span>
@@ -93,15 +93,15 @@ export const RoutinesView: React.FC<RoutinesViewProps> = ({ onOpenCreateRoutine 
         {/* Routine Stats Strip */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6 pt-5 border-t border-white/20 text-white">
           <div className="bg-white/10 rounded-xl p-3 backdrop-blur-xs">
-            <span className="text-xs text-indigo-200 block">Routines actives</span>
+            <span className="text-xs text-amber-100 block">Routines actives</span>
             <span className="text-2xl font-bold font-mono tabular-nums">{routineTasks.length}</span>
           </div>
           <div className="bg-white/10 rounded-xl p-3 backdrop-blur-xs">
-            <span className="text-xs text-indigo-200 block">Cadence personnalisée</span>
+            <span className="text-xs text-amber-100 block">Cadence personnalisée</span>
             <span className="text-sm font-semibold mt-1 block">Tous les 4 à 30 jours</span>
           </div>
           <div className="bg-white/10 rounded-xl p-3 backdrop-blur-xs col-span-2 sm:col-span-1">
-            <span className="text-xs text-indigo-200 block">Renouvellement</span>
+            <span className="text-xs text-amber-100 block">Renouvellement</span>
             <span className="text-sm font-semibold mt-1 block">1 clic = reprogrammé</span>
           </div>
         </div>
@@ -110,27 +110,27 @@ export const RoutinesView: React.FC<RoutinesViewProps> = ({ onOpenCreateRoutine 
       {/* Routine Cards List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-base font-bold text-slate-900 font-display flex items-center gap-2">
+          <h2 className="text-base font-bold text-stone-900 font-display flex items-center gap-2">
             <span>Routines en cours</span>
-            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200/70">
               {routineTasks.length}
             </span>
           </h2>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-stone-500">
             Dès que vous cochez une routine, la prochaine date est calculée automatiquement.
           </span>
         </div>
 
         {routineTasks.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 shadow-xs">
+          <div className="bg-[#FFFDF9] rounded-3xl p-12 text-center border border-amber-200/80 shadow-xs">
             <span className="text-4xl block mb-2">🔄</span>
-            <h3 className="text-base font-bold text-slate-800">Aucune routine configurée</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+            <h3 className="text-base font-bold text-stone-800">Aucune routine configurée</h3>
+            <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
               Les routines vous évitent d'oublier les tâches périodiques comme les draps, le détartrage ou le changement des filtres.
             </p>
             <button
               onClick={onOpenCreateRoutine}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
             >
               <Plus className="w-4 h-4" />
               <span>Créer ma première routine</span>

@@ -38,72 +38,72 @@ export const ROOM_THEMES: Record<RoomType, {
   cuisine: {
     label: 'Cuisine',
     icon: '🍳',
-    cardBg: 'bg-amber-50/80 hover:bg-amber-50',
-    cardBorder: 'border-amber-300',
+    cardBg: 'bg-amber-50/90 hover:bg-amber-100/70',
+    cardBorder: 'border-amber-300/80',
     badgeBg: 'bg-amber-100',
-    badgeText: 'text-amber-900',
+    badgeText: 'text-amber-950',
     barColor: 'bg-amber-500',
     dotColor: 'bg-amber-500',
   },
   salon: {
     label: 'Salon',
     icon: '🛋️',
-    cardBg: 'bg-sky-50/80 hover:bg-sky-50',
-    cardBorder: 'border-sky-300',
-    badgeBg: 'bg-sky-100',
-    badgeText: 'text-sky-900',
-    barColor: 'bg-sky-500',
-    dotColor: 'bg-sky-500',
+    cardBg: 'bg-orange-50/90 hover:bg-orange-100/70',
+    cardBorder: 'border-orange-300/80',
+    badgeBg: 'bg-orange-100',
+    badgeText: 'text-orange-950',
+    barColor: 'bg-orange-500',
+    dotColor: 'bg-orange-500',
   },
   chambres: {
     label: 'Chambres',
     icon: '🛏️',
-    cardBg: 'bg-violet-50/80 hover:bg-violet-50',
-    cardBorder: 'border-violet-300',
-    badgeBg: 'bg-violet-100',
-    badgeText: 'text-violet-900',
-    barColor: 'bg-violet-500',
-    dotColor: 'bg-violet-500',
+    cardBg: 'bg-rose-50/90 hover:bg-rose-100/70',
+    cardBorder: 'border-rose-300/80',
+    badgeBg: 'bg-rose-100',
+    badgeText: 'text-rose-950',
+    barColor: 'bg-rose-500',
+    dotColor: 'bg-rose-500',
   },
   salle_de_bain: {
     label: 'Salle de bain',
     icon: '🛁',
-    cardBg: 'bg-cyan-50/80 hover:bg-cyan-50',
-    cardBorder: 'border-cyan-300',
-    badgeBg: 'bg-cyan-100',
-    badgeText: 'text-cyan-900',
-    barColor: 'bg-cyan-500',
-    dotColor: 'bg-cyan-500',
+    cardBg: 'bg-teal-50/90 hover:bg-teal-100/70',
+    cardBorder: 'border-teal-300/80',
+    badgeBg: 'bg-teal-100',
+    badgeText: 'text-teal-950',
+    barColor: 'bg-teal-500',
+    dotColor: 'bg-teal-500',
   },
   exterieur: {
     label: 'Jardin & Balcon',
     icon: '🌿',
-    cardBg: 'bg-emerald-50/80 hover:bg-emerald-50',
-    cardBorder: 'border-emerald-300',
+    cardBg: 'bg-emerald-50/90 hover:bg-emerald-100/70',
+    cardBorder: 'border-emerald-300/80',
     badgeBg: 'bg-emerald-100',
-    badgeText: 'text-emerald-900',
-    barColor: 'bg-emerald-500',
-    dotColor: 'bg-emerald-500',
+    badgeText: 'text-emerald-950',
+    barColor: 'bg-emerald-600',
+    dotColor: 'bg-emerald-600',
   },
   entree: {
     label: 'Entrée & Couloirs',
     icon: '🚪',
-    cardBg: 'bg-orange-50/80 hover:bg-orange-50',
-    cardBorder: 'border-orange-300',
-    badgeBg: 'bg-orange-100',
-    badgeText: 'text-orange-900',
-    barColor: 'bg-orange-500',
-    dotColor: 'bg-orange-500',
+    cardBg: 'bg-stone-50/90 hover:bg-stone-100/70',
+    cardBorder: 'border-amber-300/70',
+    badgeBg: 'bg-amber-100',
+    badgeText: 'text-stone-900',
+    barColor: 'bg-amber-600',
+    dotColor: 'bg-amber-600',
   },
   toute_la_maison: {
     label: 'Toute la maison',
     icon: '🏡',
-    cardBg: 'bg-indigo-50/80 hover:bg-indigo-50',
-    cardBorder: 'border-indigo-300',
-    badgeBg: 'bg-indigo-100',
-    badgeText: 'text-indigo-900',
-    barColor: 'bg-indigo-500',
-    dotColor: 'bg-indigo-500',
+    cardBg: 'bg-amber-50/80 hover:bg-amber-100/70',
+    cardBorder: 'border-orange-300/80',
+    badgeBg: 'bg-amber-200/80',
+    badgeText: 'text-amber-950',
+    barColor: 'bg-amber-600',
+    dotColor: 'bg-amber-600',
   },
 };
 
@@ -260,68 +260,50 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
         </div>
       )}
 
-      {/* 2. HELP & TESTING GUIDE BANNER */}
-      {showHowToTest && (
-        <div className="bg-gradient-to-r from-indigo-50/90 via-sky-50/70 to-emerald-50/80 border border-indigo-200/80 rounded-2xl p-4 text-slate-800 shadow-xs relative">
-          <button
-            onClick={() => setShowHowToTest(false)}
-            className="absolute top-3 right-3 text-slate-400 hover:text-slate-600 text-xs px-2 py-0.5 rounded-md hover:bg-white/80 transition-colors"
-            title="Masquer le guide"
-          >
-            ✕ Masquer
-          </button>
-          
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-              <HelpCircle className="w-4 h-4" />
-            </div>
-            <div className="space-y-1 pr-14 text-xs">
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <span>Planning & Gestion des Tâches</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-bold">
-                  Guide d'utilisation
-                </span>
-              </h3>
-              <p className="text-slate-600">
-                Organisez vos corvées par pièce, gérez vos cadences récurrentes et modifiez tout en direct :
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 pt-1 text-[11px]">
-                <div className="bg-white/80 backdrop-blur-xs p-2 rounded-xl border border-slate-200/60">
-                  <span className="font-bold text-indigo-900 block">1. ✏️ Cliquer pour modifier</span>
-                  <span className="text-slate-500">Cliquez sur n'importe quelle carte pour ajuster l'intitulé, la pièce, la date ou la routine.</span>
-                </div>
-                <div className="bg-white/80 backdrop-blur-xs p-2 rounded-xl border border-slate-200/60">
-                  <span className="font-bold text-emerald-900 block">2. ✓ Valider / Décocher</span>
-                  <span className="text-slate-500">Cliquez sur le cercle pour cocher une tâche faite avec effet visuel.</span>
-                </div>
-                <div className="bg-white/80 backdrop-blur-xs p-2 rounded-xl border border-slate-200/60">
-                  <span className="font-bold text-amber-900 block">3. 📅 Navigation semaine</span>
-                  <span className="text-slate-500">Utilisez <strong>← / →</strong> pour tester dans 15 jours (ex: routine draps).</span>
-                </div>
-                <div className="bg-white/80 backdrop-blur-xs p-2 rounded-xl border border-slate-200/60">
-                  <span className="font-bold text-rose-900 block">4. 🧹 Faire du tri</span>
-                  <span className="text-slate-500">Supprimez rapidement les tâches non nécessaires pour garder l'agenda net.</span>
-                </div>
-              </div>
-            </div>
+      {/* 2. WARM WELCOME & COZY HOME BANNER */}
+      <div className="bg-gradient-to-r from-amber-50/90 via-orange-50/70 to-stone-50 border border-amber-200/80 rounded-2xl p-4 text-stone-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center text-lg shadow-sm shadow-orange-500/20 shrink-0">
+            ☀️
+          </div>
+          <div>
+            <h2 className="text-sm sm:text-base font-bold font-display text-amber-950 flex items-center gap-2">
+              <span>Mon Foyer Douillet & Organisé</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200/70">
+                Aujourd'hui
+              </span>
+            </h2>
+            <p className="text-xs text-stone-600 mt-0.5">
+              Chaque petite corvée accomplie apporte calme et sérénité dans votre maison 🌿
+            </p>
           </div>
         </div>
-      )}
+
+        <div className="flex items-center gap-2 text-xs shrink-0">
+          <a
+            href="#guide-utilisateur"
+            className="px-3.5 py-1.5 rounded-xl bg-amber-100/90 hover:bg-amber-200/90 text-amber-950 font-bold border border-amber-300/70 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          >
+            <span>📖 Guide & Astuces</span>
+            <span className="text-amber-700">↓</span>
+          </a>
+        </div>
+      </div>
 
       {/* 3. AGENDA CONTROL HEADER */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-4">
+      <div className="bg-[#FFFDF9] rounded-3xl p-5 border border-amber-200/80 shadow-xs space-y-4">
         
         {/* Top line: Title & Actions */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-amber-100">
           <div>
             <div className="flex items-center gap-2">
-              <CalendarIcon className="w-5 h-5 text-indigo-600" />
-              <h1 className="text-lg font-bold text-slate-900 font-display">
-                Calendrier Hebdomadaire des Tâches
+              <CalendarIcon className="w-5 h-5 text-amber-600" />
+              <h1 className="text-lg font-bold text-stone-900 font-display">
+                Calendrier Hebdomadaire des Corvées
               </h1>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Code couleur par pièce de la maison · Cliquez sur une tâche pour l'éditer.
+            <p className="text-xs text-stone-500 mt-0.5">
+              Code couleur par pièce de la maison · Touchez ou cliquez sur une corvée pour l'ajuster.
             </p>
           </div>
 
@@ -329,40 +311,40 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
           <div className="flex items-center flex-wrap gap-2 shrink-0">
             
             {/* View Mode Switcher */}
-            <div className="flex items-center p-1 bg-slate-100 rounded-xl">
+            <div className="flex items-center p-1 bg-amber-50/80 border border-amber-200/50 rounded-2xl">
               <button
                 onClick={() => setViewMode('week')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   viewMode === 'week'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-amber-950 shadow-xs ring-1 ring-amber-300/60'
+                    : 'text-stone-600 hover:text-stone-900'
                 }`}
               >
-                <CalendarDays className="w-3.5 h-3.5 text-indigo-600" />
+                <CalendarDays className="w-3.5 h-3.5 text-amber-600" />
                 <span>Semaine</span>
               </button>
 
               <button
                 onClick={() => setViewMode('day')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   viewMode === 'day'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-amber-950 shadow-xs ring-1 ring-amber-300/60'
+                    : 'text-stone-600 hover:text-stone-900'
                 }`}
               >
-                <LayoutList className="w-3.5 h-3.5 text-slate-500" />
+                <LayoutList className="w-3.5 h-3.5 text-stone-500" />
                 <span>Jour</span>
               </button>
 
               <button
                 onClick={() => setViewMode('rooms')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   viewMode === 'rooms'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-amber-950 shadow-xs ring-1 ring-amber-300/60'
+                    : 'text-stone-600 hover:text-stone-900'
                 }`}
               >
-                <Home className="w-3.5 h-3.5 text-slate-500" />
+                <Home className="w-3.5 h-3.5 text-stone-500" />
                 <span>Par Pièce</span>
               </button>
             </div>
@@ -371,7 +353,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
             <button
               onClick={() => setIsCleanerOpen(true)}
               title="Supprimer les tâches superflues"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200/60 rounded-xl text-xs font-bold transition-all shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200/60 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <span>🧹</span>
               <span>Faire du tri</span>
@@ -383,7 +365,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
                 setSelectedDate(TODAY_STR);
                 onOpenAddTask();
               }}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 text-white rounded-xl text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>+ Planifier</span>
@@ -441,36 +423,36 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
         <div className="space-y-4">
           
           {/* Week Navigation Header */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-[#FFFDF9] rounded-3xl p-4 border border-amber-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setWeekOffset(prev => prev - 1)}
                 title="Semaine précédente"
-                className="p-1.5 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                className="p-1.5 text-stone-600 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
 
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm sm:text-base font-bold text-slate-900 font-display">
+                  <span className="text-sm sm:text-base font-bold text-stone-900 font-display">
                     Semaine du {weekStart.num} {weekStart.month} au {weekEnd.num} {weekEnd.month} {weekEnd.year}
                   </span>
                   {weekOffset === 0 ? (
-                    <span className="text-[11px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[11px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full border border-amber-200/70">
                       Cette semaine
                     </span>
                   ) : weekOffset > 0 ? (
-                    <span className="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[11px] bg-orange-100 text-orange-900 font-bold px-2 py-0.5 rounded-full border border-orange-200/70">
                       +{weekOffset} sem.
                     </span>
                   ) : (
-                    <span className="text-[11px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[11px] bg-stone-100 text-stone-700 font-bold px-2 py-0.5 rounded-full border border-stone-200">
                       {weekOffset} sem.
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-stone-500">
                   {weekTasks.filter(t => !t.completed).length} tâche(s) programmée(s) cette semaine
                 </span>
               </div>
@@ -478,7 +460,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
               <button
                 onClick={() => setWeekOffset(prev => prev + 1)}
                 title="Semaine suivante"
-                className="p-1.5 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                className="p-1.5 text-stone-600 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -488,7 +470,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
               {weekOffset !== 0 && (
                 <button
                   onClick={() => setWeekOffset(0)}
-                  className="px-3 py-1.5 text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl transition-colors"
+                  className="px-3 py-1.5 text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/70 rounded-xl transition-colors cursor-pointer"
                 >
                   Revenir à cette semaine
                 </button>
@@ -499,7 +481,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
                   setSelectedDate(TODAY_STR);
                   onOpenAddTask();
                 }}
-                className="px-3 py-1.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
+                className="px-3.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-800 text-white rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Ajouter une corvée</span>
@@ -517,28 +499,28 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
               return (
                 <div
                   key={day.date}
-                  className={`bg-white rounded-2xl border transition-all flex flex-col min-h-[420px] shadow-xs ${
+                  className={`bg-[#FFFDF9] rounded-2xl border transition-all flex flex-col min-h-[420px] shadow-xs ${
                     isToday
-                      ? 'border-indigo-500 ring-2 ring-indigo-400/25 shadow-sm'
-                      : 'border-slate-200/90'
+                      ? 'border-amber-400 ring-2 ring-amber-300/40 shadow-sm'
+                      : 'border-amber-200/60'
                   }`}
                 >
                   {/* Column Day Header */}
                   <div className={`p-3 border-b flex items-center justify-between rounded-t-2xl ${
-                    isToday ? 'bg-indigo-50/80 border-indigo-100' : 'bg-slate-50/90 border-slate-100'
+                    isToday ? 'bg-amber-100/70 border-amber-200/80' : 'bg-stone-50/80 border-amber-100/70'
                   }`}>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-black text-slate-900 uppercase">
+                        <span className="text-xs font-black text-stone-900 uppercase">
                           {day.label}
                         </span>
                         <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black font-mono ${
-                          isToday ? 'bg-indigo-600 text-white shadow-2xs' : 'bg-slate-200 text-slate-800'
+                          isToday ? 'bg-gradient-to-tr from-amber-600 to-orange-500 text-white shadow-2xs' : 'bg-stone-200/90 text-stone-800'
                         }`}>
                           {day.num}
                         </span>
                       </div>
-                      <span className="text-[10px] text-slate-500 font-semibold block mt-0.5">
+                      <span className="text-[10px] text-stone-500 font-semibold block mt-0.5">
                         {isToday ? "Aujourd'hui · " : ''}
                         {pendingCount > 0 ? `${pendingCount} à faire` : '✓ À jour'}
                       </span>
@@ -551,7 +533,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
                         onOpenAddTask();
                       }}
                       title={`Ajouter une tâche le ${day.short} ${day.num}`}
-                      className="w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 text-indigo-700 border border-slate-200 flex items-center justify-center transition-colors shadow-2xs"
+                      className="w-7 h-7 rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-200 flex items-center justify-center transition-colors shadow-2xs cursor-pointer"
                     >
                       <Plus className="w-4 h-4 stroke-[2.5]" />
                     </button>
@@ -560,14 +542,14 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
                   {/* Tasks List in this Day */}
                   <div className="p-2 space-y-2.5 flex-1">
                     {dayTasks.length === 0 ? (
-                      <div className="py-14 text-center text-[11px] text-slate-400 italic">
+                      <div className="py-14 text-center text-[11px] text-stone-400 italic">
                         <span>Rien ce jour</span>
                         <button
                           onClick={() => {
                             setSelectedDate(day.date);
                             onOpenAddTask();
                           }}
-                          className="block mx-auto mt-2 text-[10px] text-indigo-600 hover:underline font-bold"
+                          className="block mx-auto mt-2 text-[10px] text-amber-700 hover:underline font-bold cursor-pointer"
                         >
                           + Ajouter
                         </button>
