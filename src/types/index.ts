@@ -68,4 +68,4 @@ export interface HouseholdAlert {
   actionLabel?: string;
 }
 
-export type ActiveTab = 'agenda' | 'alerts' | 'routines' | 'maison';
+export type ActiveTab = 'agenda' | 'tasks' | 'alerts' | 'routines' | 'maison';

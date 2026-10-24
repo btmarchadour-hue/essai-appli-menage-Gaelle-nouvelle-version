@@ -31,10 +31,10 @@ export const UserGuideFooter: React.FC = () => {
   const { triggerCongratulations, setActiveTab } = useHousehold();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     mobile: true,
+    tasks_manager: true,
     chuck: false,
     routines: false,
     agenda: false,
-    entretien: false,
     donnees: false,
   });
 
@@ -49,10 +49,10 @@ export const UserGuideFooter: React.FC = () => {
     setIsAllOpen(nextState);
     setOpenSections({
       mobile: nextState,
+      tasks_manager: nextState,
       chuck: nextState,
       routines: nextState,
       agenda: nextState,
-      entretien: nextState,
       donnees: nextState,
     });
   };
@@ -145,6 +145,46 @@ export const UserGuideFooter: React.FC = () => {
       ),
     },
     {
+      id: 'tasks_manager',
+      title: '📋 Onglet Tâches : Modifier TOUTES les informations',
+      shortLabel: 'Toutes les Infos',
+      icon: '✏️',
+      badge: 'Contrôle Total',
+      summary: 'Visualisez, filtrez et modifiez chaque détail : titre, pièce, échéance, heure, cycle en jours, urgence.',
+      content: (
+        <div className="space-y-3 text-stone-700 text-xs sm:text-sm">
+          <p className="leading-relaxed">
+            L'onglet <strong>Tâches</strong> centralise toutes vos corvées et routines en un tableau de bord complet où <strong>absolument toutes les informations</strong> sont modifiables à tout moment.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+            <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-200/70">
+              <span className="font-bold text-amber-950 block mb-1">1. Toutes les infos</span>
+              <span className="text-stone-600">Intitulé, pièce, date, heure, routine en jours, dernière réalisation, consignes et urgence.</span>
+            </div>
+            <div className="p-3 bg-orange-50/70 rounded-xl border border-orange-200/70">
+              <span className="font-bold text-orange-950 block mb-1">2. En 1 clic ou en détail</span>
+              <span className="text-stone-600">Bouton « Ajuster » pour des changements rapides ou « Modifier tout » pour le formulaire complet.</span>
+            </div>
+            <div className="p-3 bg-stone-100/70 rounded-xl border border-stone-200">
+              <span className="font-bold text-stone-900 block mb-1">3. Tri & Recherche</span>
+              <span className="text-stone-600">Filtrez par pièce, statut (fait / à faire), routines de draps, ou recherchez un mot-clé.</span>
+            </div>
+          </div>
+
+          <div className="pt-1 flex items-center gap-2">
+            <button
+              onClick={() => setActiveTab('tasks')}
+              className="px-3.5 py-1.5 text-xs font-bold text-amber-950 bg-amber-100 hover:bg-amber-200 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-700" />
+              <span>Ouvrir l'onglet Tâches</span>
+            </button>
+          </div>
+        </div>
+      ),
+    },
+    {
       id: 'routines',
       title: '🛏️ Routines Récurrentes (Draps tous les 15 jours, etc.)',
       shortLabel: 'Cycles & Cadences',
@@ -164,7 +204,7 @@ export const UserGuideFooter: React.FC = () => {
             </div>
             <div className="p-3 bg-white rounded-xl border border-stone-200">
               <span className="font-bold text-stone-900 block mb-1">2. Validation en 1 clic</span>
-              <span className="text-stone-600">Quand vous validez la tâche aujourd'hui, elle est cochée et célébrée.</span>
+              <span className="text-stone-600">Quand vous validez la tâche aujourd'hui, elle est cochée et célébrée avec Chuck Norris.</span>
             </div>
             <div className="p-3 bg-white rounded-xl border border-stone-200">
               <span className="font-bold text-stone-900 block mb-1">3. Recalcul instantané</span>
@@ -174,76 +214,11 @@ export const UserGuideFooter: React.FC = () => {
 
           <div className="pt-1 flex items-center gap-2">
             <button
-              onClick={() => setActiveTab('routines')}
-              className="px-3.5 py-1.5 text-xs font-bold text-amber-950 bg-amber-100 hover:bg-amber-200 rounded-xl transition-colors flex items-center gap-1.5"
+              onClick={() => setActiveTab('tasks')}
+              className="px-3.5 py-1.5 text-xs font-bold text-purple-950 bg-purple-100 hover:bg-purple-200 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              <Repeat className="w-3.5 h-3.5 text-amber-700" />
-              <span>Voir l'onglet Routines</span>
-            </button>
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: 'agenda',
-      title: '📅 Agenda Hebdomadaire & Code Couleur par Pièce',
-      shortLabel: 'Agenda & Pièces',
-      icon: '🗓️',
-      badge: 'Organisation',
-      summary: 'Visualisez les tâches par jour, par semaine ou par pièce de la maison.',
-      content: (
-        <div className="space-y-3 text-stone-700 text-xs sm:text-sm">
-          <p className="leading-relaxed">
-            L'Agenda offre trois manières différentes de voir votre planning pour s'adapter à votre humeur et votre temps :
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-            <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-200/70">
-              <span className="font-bold text-amber-950 block mb-1">Vue Semaine</span>
-              <span className="text-stone-600">Vision globale de lundi à dimanche. Utilisez les flèches <strong>← / →</strong> pour voir les semaines suivantes.</span>
-            </div>
-            <div className="p-3 bg-orange-50/70 rounded-xl border border-orange-200/70">
-              <span className="font-bold text-orange-950 block mb-1">Vue Jour</span>
-              <span className="text-stone-600">Découpage de la journée : Matin, Après-midi, Soirée et Libre pour avancer pas à pas.</span>
-            </div>
-            <div className="p-3 bg-stone-100/70 rounded-xl border border-stone-200">
-              <span className="font-bold text-stone-900 block mb-1">Vue Par Pièce</span>
-              <span className="text-stone-600">Regroupe vos corvées par pièce (Cuisine, Salon, Chambres...) pour nettoyer zone par zone.</span>
-            </div>
-          </div>
-
-          <div className="p-2.5 bg-amber-50/50 rounded-xl border border-amber-200/50 text-xs text-stone-600">
-            <strong>✏️ Modification directe :</strong> Cliquez sur n'importe quelle carte de tâche pour changer son libellé, sa date, sa pièce ou son horaire.
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: 'entretien',
-      title: '🔧 Carnet d’Entretien des Équipements & Saisons',
-      shortLabel: 'Carnet Maison',
-      icon: '🏡',
-      badge: 'Longévité',
-      summary: 'Surveillez les filtres, la chaudière, la VMC et les corvées saisonnières.',
-      content: (
-        <div className="space-y-3 text-stone-700 text-xs sm:text-sm">
-          <p className="leading-relaxed">
-            Un équipement bien entretenu dure 2 à 3 fois plus longtemps. Le carnet maison calcule le nombre de jours restants avant la prochaine révision :
-          </p>
-
-          <ul className="list-disc list-inside space-y-1 text-xs text-stone-600 pl-1">
-            <li><strong>Décompte intelligent :</strong> Chaque équipement (lave-vaisselle, chaudière, adoucisseur...) affiche les jours restants.</li>
-            <li><strong>Alertes préventives :</strong> Vous recevez un rappel 7 jours avant l'échéance dans le centre d'alertes.</li>
-            <li><strong>Tâches saisonnières :</strong> Automne (ramonage, feuilles), Hiver (purge radiateurs, sel), Printemps (terrasse, tondeuse), Été (climatisation).</li>
-          </ul>
-
-          <div className="pt-1 flex items-center gap-2">
-            <button
-              onClick={() => setActiveTab('maison')}
-              className="px-3.5 py-1.5 text-xs font-bold text-stone-800 bg-stone-100 hover:bg-stone-200 rounded-xl transition-colors flex items-center gap-1.5"
-            >
-              <Wrench className="w-3.5 h-3.5 text-amber-700" />
-              <span>Ouvrir le Carnet Maison</span>
+              <Repeat className="w-3.5 h-3.5 text-purple-700" />
+              <span>Gérer les routines dans l'onglet Tâches</span>
             </button>
           </div>
         </div>

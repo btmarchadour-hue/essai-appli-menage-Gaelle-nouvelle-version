@@ -4,8 +4,7 @@ import { Header } from './components/Header';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { AgendaView } from './components/views/AgendaView';
 import { AlertsCenterView } from './components/views/AlertsCenterView';
-import { RoutinesView } from './components/views/RoutinesView';
-import { HomeCareView } from './components/views/HomeCareView';
+import { TasksManagerView } from './components/views/TasksManagerView';
 import { QuickAddModal } from './components/modals/QuickAddModal';
 import { BackupModal } from './components/modals/BackupModal';
 import { ChuckCelebrationToast } from './components/ChuckCelebrationToast';
@@ -38,14 +37,11 @@ const MainContent: React.FC = () => {
         {activeTab === 'agenda' && (
           <AgendaView onOpenAddTask={() => openQuickAdd('task')} />
         )}
-        {activeTab === 'routines' && (
-          <RoutinesView onOpenCreateRoutine={() => openQuickAdd('task')} />
+        {(activeTab === 'tasks' || activeTab === 'routines' || activeTab === 'maison') && (
+          <TasksManagerView onOpenCreateTask={() => openQuickAdd('task')} />
         )}
         {activeTab === 'alerts' && (
           <AlertsCenterView />
-        )}
-        {activeTab === 'maison' && (
-          <HomeCareView onOpenAddEquipment={() => openQuickAdd('equipment')} />
         )}
 
         {/* User Guide: Mobile-first & positioned at the bottom of the page */}

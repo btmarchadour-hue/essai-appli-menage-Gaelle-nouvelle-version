@@ -7,7 +7,7 @@ import {
   TaskFrequency,
   TimeOfDay
 } from '../../types';
-import { X, Calendar, Wrench, Repeat, AlertCircle } from 'lucide-react';
+import { X, Calendar, Wrench, Repeat, AlertCircle, Plus, Check } from 'lucide-react';
 import { ROOM_THEMES } from '../views/AgendaView';
 
 interface QuickAddModalProps {
@@ -90,331 +90,243 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
       });
     }
 
+    // Reset fields
+    setTaskTitle('');
+    setTaskDesc('');
+    setIsRoutine(false);
     onClose();
   };
 
   const roomKeys: RoomType[] = ['cuisine', 'salon', 'chambres', 'salle_de_bain', 'entree', 'exterieur', 'toute_la_maison'];
 
+  const setRelativeDue = (daysToAdd: number) => {
+    const d = new Date(TODAY_STR);
+    d.setDate(d.getDate() + daysToAdd);
+    setTaskDueDate(d.toISOString().split('T')[0]);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-900/60 backdrop-blur-xs">
+      <div className="bg-[#FFFDF9] rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-amber-200/80 max-h-[92vh] overflow-y-auto animate-fade-in text-stone-900">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-          <h2 className="text-base font-bold text-slate-900 font-display">
-            Planifier dans l'Agenda
-          </h2>
+        <div className="flex items-center justify-between pb-3.5 border-b border-amber-200/70">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">✨</span>
+            <h2 className="text-base font-bold text-amber-950 font-display">
+              Créer une Nouvelle Tâche
+            </h2>
+          </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-1.5 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-stone-100 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Type Switcher */}
-        <div className="flex p-1 bg-slate-100 rounded-xl my-4">
-          <button
-            type="button"
-            onClick={() => setActiveType('task')}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
-              activeType === 'task'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-500 hover:text-slate-900'
-            }`}
-          >
-            <Calendar className="w-4 h-4 text-indigo-600" />
-            <span>Tâche ou Routine</span>
-          </button>
+        <form onSubmit={handleSubmit} className="space-y-4 my-3 text-xs">
+          
+          {/* Title */}
+          <div>
+            <label className="text-xs font-bold text-stone-800 block mb-1">
+              Intitulé de la tâche *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="Ex : Changer les draps des lits, détartrer la cafetière..."
+              value={taskTitle}
+              onChange={e => setTaskTitle(e.target.value)}
+              className="w-full px-3.5 py-2 text-xs bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500/40 focus:outline-none font-semibold text-stone-900"
+            />
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setActiveType('equipment')}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
-              activeType === 'equipment'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-500 hover:text-slate-900'
-            }`}
-          >
-            <Wrench className="w-4 h-4 text-teal-600" />
-            <span>Équipement Maison</span>
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {activeType === 'task' && (
-            <>
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Intitulé de la tâche *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ex : Changer les draps des lits, vider le lave-vaisselle..."
-                  value={taskTitle}
-                  onChange={e => setTaskTitle(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                />
+          {/* Routine Recurrence Box */}
+          <div className="p-3.5 bg-purple-50/80 rounded-2xl border border-purple-200/80 space-y-2.5">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isRoutine}
+                onChange={e => setIsRoutine(e.target.checked)}
+                className="w-4 h-4 text-purple-600 rounded"
+              />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-purple-950">
+                <Repeat className="w-4 h-4 text-purple-600" />
+                <span>Routine récurrente automatique (ex : draps tous les 15 jours)</span>
               </div>
+            </label>
 
-              {/* Routine Recurrence Box */}
-              <div className="p-3.5 bg-indigo-50/60 rounded-2xl border border-indigo-200/80 space-y-2.5">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={isRoutine}
-                    onChange={e => setIsRoutine(e.target.checked)}
-                    className="w-4 h-4 text-indigo-600 rounded"
-                  />
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-950">
-                    <Repeat className="w-4 h-4 text-indigo-600" />
-                    <span>Créer une Routine Récurrente (ex : draps tous les 15 jours)</span>
-                  </div>
+            {isRoutine && (
+              <div className="pt-2 pl-6 space-y-2 border-t border-purple-200/60">
+                <label className="text-xs font-semibold text-purple-900 block">
+                  Cadence maximale de renouvellement :
                 </label>
-
-                {isRoutine && (
-                  <div className="pt-2 pl-6 space-y-2 border-t border-indigo-100">
-                    <label className="text-xs font-semibold text-indigo-900 block">
-                      Cadence maximale de renouvellement :
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        min="1"
-                        max="365"
-                        value={intervalDays}
-                        onChange={e => setIntervalDays(Number(e.target.value))}
-                        className="w-20 px-3 py-1.5 text-xs bg-white border border-indigo-200 rounded-xl font-mono tabular-nums font-bold text-center"
-                      />
-                      <span className="text-xs text-indigo-800 font-medium">jours maxi entre 2 réalisations</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setIntervalDays(4)}
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
-                          intervalDays === 4 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-indigo-700 border-indigo-200'
-                        }`}
-                      >
-                        4 jours (torchons)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIntervalDays(7)}
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
-                          intervalDays === 7 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-indigo-700 border-indigo-200'
-                        }`}
-                      >
-                        7 jours (serviettes)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIntervalDays(15)}
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
-                          intervalDays === 15 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-indigo-700 border-indigo-200'
-                        }`}
-                      >
-                        15 jours (draps de lits)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIntervalDays(30)}
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
-                          intervalDays === 30 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-indigo-700 border-indigo-200'
-                        }`}
-                      >
-                        30 jours (détartrage)
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Date & Time Slot */}
-              <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Date dans l'agenda *
-                  </label>
+                <div className="flex items-center gap-2">
                   <input
-                    type="date"
-                    required
-                    value={taskDueDate}
-                    onChange={e => setTaskDueDate(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl font-mono tabular-nums"
+                    type="number"
+                    min="1"
+                    max="365"
+                    value={intervalDays}
+                    onChange={e => setIntervalDays(Number(e.target.value))}
+                    className="w-16 px-2.5 py-1 text-xs bg-white border border-purple-300 rounded-xl font-mono tabular-nums font-bold text-center text-purple-950"
                   />
+                  <span className="text-xs text-purple-900 font-medium">jours entre chaque réalisation</span>
                 </div>
 
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Créneau
-                  </label>
-                  <select
-                    value={taskTimeOfDay}
-                    onChange={e => setTaskTimeOfDay(e.target.value as TimeOfDay)}
-                    className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl"
+                <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                  {[
+                    { label: '4j (torchons)', d: 4 },
+                    { label: '7j (serviettes)', d: 7 },
+                    { label: '15j (draps)', d: 15 },
+                    { label: '30j (détartrage)', d: 30 }
+                  ].map(preset => (
+                    <button
+                      key={preset.d}
+                      type="button"
+                      onClick={() => setIntervalDays(preset.d)}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-md border transition-colors ${
+                        intervalDays === preset.d 
+                          ? 'bg-purple-700 text-white border-purple-700' 
+                          : 'bg-white text-purple-900 border-purple-200 hover:bg-purple-100'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Date & Time Slot */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-white rounded-2xl border border-amber-200/70">
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-bold text-stone-800 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Date d'échéance *</span>
+                </label>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setRelativeDue(0)}
+                    className="text-[10px] text-amber-900 font-semibold hover:underline"
                   >
-                    <option value="matin">🌅 Matin (07h-09h)</option>
-                    <option value="apres_midi">☀️ Après-midi (16h-18h)</option>
-                    <option value="soir">🌙 Soirée (19h-21h)</option>
-                    <option value="libre">📋 Dans la journée</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Room Selection */}
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Pièce de la maison
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                  {roomKeys.map(rk => {
-                    const isSelected = taskRoom === rk;
-                    const theme = ROOM_THEMES[rk];
-                    return (
-                      <button
-                        key={rk}
-                        type="button"
-                        onClick={() => setTaskRoom(rk)}
-                        className={`p-2 rounded-xl border text-center transition-all flex flex-col items-center gap-0.5 ${
-                          isSelected
-                            ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                            : `${theme.cardBg} ${theme.cardBorder} text-slate-700 hover:shadow-xs`
-                        }`}
-                      >
-                        <span className="text-lg">{theme.icon}</span>
-                        <span className="text-[10px] font-bold truncate">{theme.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Description ou conseils (optionnel)
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ex : Housse de couette, taie d’oreiller, produit vitre..."
-                  value={taskDesc}
-                  onChange={e => setTaskDesc(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-between pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                  <input
-                    type="checkbox"
-                    checked={taskUrgent}
-                    onChange={e => setTaskUrgent(e.target.checked)}
-                    className="w-4 h-4 text-rose-600 rounded"
-                  />
-                  <span className="flex items-center gap-1 text-rose-700">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    <span>Priorité haute / Urgent</span>
-                  </span>
-                </label>
-              </div>
-            </>
-          )}
-
-          {activeType === 'equipment' && (
-            <>
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Nom de l'appareil ou équipement *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ex : Chaudière gaz, Lave-linge, VMC..."
-                  value={eqName}
-                  onChange={e => setEqName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Catégorie
-                  </label>
-                  <select
-                    value={eqCategory}
-                    onChange={e => setEqCategory(e.target.value as EquipmentCategory)}
-                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl"
+                    Auj.
+                  </button>
+                  <span className="text-stone-300">·</span>
+                  <button
+                    type="button"
+                    onClick={() => setRelativeDue(1)}
+                    className="text-[10px] text-amber-900 font-semibold hover:underline"
                   >
-                    <option value="electromenager">Électroménager</option>
-                    <option value="chauffage">Chauffage & VMC</option>
-                    <option value="plomberie">Plomberie</option>
-                    <option value="jardin">Jardin & Extérieur</option>
-                    <option value="vehicule">Véhicule</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Localisation
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ex : Cuisine, Garage..."
-                    value={eqLocation}
-                    onChange={e => setEqLocation(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl"
-                  />
+                    Demain
+                  </button>
                 </div>
               </div>
+              <input
+                type="date"
+                required
+                value={taskDueDate}
+                onChange={e => setTaskDueDate(e.target.value)}
+                className="w-full px-2.5 py-1.5 text-xs bg-stone-50 border border-stone-200 rounded-xl font-mono tabular-nums font-bold"
+              />
+            </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Fréquence d'entretien (en jours)
-                </label>
-                <input
-                  type="number"
-                  min="7"
-                  max="730"
-                  value={eqFreqDays}
-                  onChange={e => setEqFreqDays(Number(e.target.value))}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-bold text-stone-800 block mb-1">
+                Créneau horaire
+              </label>
+              <select
+                value={taskTimeOfDay}
+                onChange={e => setTaskTimeOfDay(e.target.value as TimeOfDay)}
+                className="w-full px-2.5 py-1.5 text-xs bg-stone-50 border border-stone-200 rounded-xl"
+              >
+                <option value="matin">🌅 Matin (07h-09h)</option>
+                <option value="apres_midi">☀️ Après-midi (16h-18h)</option>
+                <option value="soir">🌙 Soirée (19h-21h)</option>
+                <option value="libre">📋 Dans la journée</option>
+              </select>
+            </div>
+          </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Instructions ou gestes d'entretien
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Que faut-il vérifier, nettoyer ou remplacer ?"
-                  value={eqInstructions}
-                  onChange={e => setEqInstructions(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                />
-              </div>
-            </>
-          )}
+          {/* Room Selection */}
+          <div>
+            <label className="text-xs font-bold text-stone-800 block mb-1.5">
+              Pièce de la maison *
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              {roomKeys.map(rk => {
+                const isSelected = taskRoom === rk;
+                const theme = ROOM_THEMES[rk];
+                return (
+                  <button
+                    key={rk}
+                    type="button"
+                    onClick={() => setTaskRoom(rk)}
+                    className={`p-2 rounded-xl border text-center transition-all flex flex-col items-center gap-0.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-amber-950 text-white border-amber-950 shadow-xs'
+                        : `${theme.cardBg} ${theme.cardBorder} text-stone-800 hover:shadow-xs`
+                    }`}
+                  >
+                    <span className="text-base">{theme.icon}</span>
+                    <span className="text-[10px] font-bold truncate w-full">{theme.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="text-xs font-bold text-stone-800 block mb-1">
+              Description ou consignes (optionnel)
+            </label>
+            <input
+              type="text"
+              placeholder="Ex : Housse de couette, taie d’oreiller, produit vitre..."
+              value={taskDesc}
+              onChange={e => setTaskDesc(e.target.value)}
+              className="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+            />
+          </div>
+
+          {/* Urgent checkbox */}
+          <div className="flex items-center justify-between pt-1">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700">
+              <input
+                type="checkbox"
+                checked={taskUrgent}
+                onChange={e => setTaskUrgent(e.target.checked)}
+                className="w-4 h-4 text-rose-600 rounded"
+              />
+              <span className="flex items-center gap-1 text-rose-700 font-bold">
+                <AlertCircle className="w-3.5 h-3.5" />
+                <span>Priorité haute / Urgent</span>
+              </span>
+            </label>
+          </div>
 
           {/* Submit Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-amber-200/70">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+              className="px-4 py-2 text-xs font-semibold text-stone-600 hover:bg-stone-100 rounded-xl transition-colors cursor-pointer"
             >
               Annuler
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition-all active:scale-95"
+              className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 rounded-xl shadow-sm shadow-orange-500/20 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
             >
-              Enregistrer
+              <Check className="w-4 h-4" />
+              <span>Créer la tâche</span>
             </button>
           </div>
+
         </form>
 
       </div>

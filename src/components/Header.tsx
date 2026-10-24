@@ -3,8 +3,8 @@ import { useHousehold } from '../context/HouseholdContext';
 import { ActiveTab } from '../types';
 import { 
   Calendar, 
+  CheckSquare,
   Repeat, 
-  Wrench, 
   Plus, 
   Settings2,
   Bell,
@@ -31,12 +31,12 @@ export const Header: React.FC<HeaderProps> = ({
   const routineCount = tasks.filter(t => t.isRoutine).length;
 
   const navItems: { id: ActiveTab; label: string; icon: React.ReactNode; badge?: number; badgeColor?: string }[] = [
-    { id: 'agenda', label: 'Agenda & Corvées', icon: <Calendar className="w-4 h-4" /> },
+    { id: 'agenda', label: 'Agenda & Planning', icon: <Calendar className="w-4 h-4" /> },
     { 
-      id: 'routines', 
-      label: 'Routines (Draps, etc.)', 
-      icon: <Repeat className="w-4 h-4" />,
-      badge: routineCount > 0 ? routineCount : undefined,
+      id: 'tasks', 
+      label: 'Tâches (Toutes les infos)', 
+      icon: <CheckSquare className="w-4 h-4" />,
+      badge: tasks.length > 0 ? tasks.length : undefined,
       badgeColor: 'bg-amber-100 text-amber-900 border border-amber-300/60'
     },
     { 
@@ -46,7 +46,6 @@ export const Header: React.FC<HeaderProps> = ({
       badge: alerts.length > 0 ? alerts.length : undefined,
       badgeColor: criticalAlertsCount > 0 ? 'bg-rose-500 text-white' : 'bg-amber-500 text-amber-950 font-bold'
     },
-    { id: 'maison', label: 'Carnet Maison & Équipements', icon: <Wrench className="w-4 h-4" /> },
   ];
 
   return (

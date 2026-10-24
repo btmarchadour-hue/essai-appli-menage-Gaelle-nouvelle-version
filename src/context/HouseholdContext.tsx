@@ -48,6 +48,7 @@ interface HouseholdContextType extends HouseholdState {
   addTask: (task: Omit<ChoreTask, 'id' | 'completed'>) => void;
   editTask: (task: ChoreTask) => void;
   deleteTask: (taskId: string) => void;
+  duplicateTask: (taskId: string) => void;
   bulkDeleteTasks: (taskIds: string[]) => void;
   clearAllTasks: () => void;
   loadMinimalTasks: () => void;
@@ -356,6 +357,24 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }));
   };
 
+  const duplicateTask = (taskId: string) => {
+    setState(prev => {
+      const original = prev.tasks.find(t => t.id === taskId);
+      if (!original) return prev;
+      const clone: ChoreTask = {
+        ...original,
+        id: `task-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        title: `${original.title} (copie)`,
+        completed: false,
+        completedAt: undefined,
+      };
+      return {
+        ...prev,
+        tasks: [clone, ...prev.tasks],
+      };
+    });
+  };
+
   const bulkDeleteTasks = (taskIds: string[]) => {
     const set = new Set(taskIds);
     setState(prev => ({
@@ -497,6 +516,7 @@ export const HouseholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         addTask,
         editTask,
         deleteTask,
+        duplicateTask,
         bulkDeleteTasks,
         clearAllTasks,
         loadMinimalTasks,
