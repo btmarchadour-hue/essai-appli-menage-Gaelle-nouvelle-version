@@ -8,10 +8,10 @@ import { TasksManagerView } from './components/views/TasksManagerView';
 import { QuickAddModal } from './components/modals/QuickAddModal';
 import { BackupModal } from './components/modals/BackupModal';
 import { ChuckCelebrationToast } from './components/ChuckCelebrationToast';
-import { UserGuideFooter } from './components/UserGuideFooter';
+import { UserGuideView } from './components/views/UserGuideView';
 
 const MainContent: React.FC = () => {
-  const { activeTab } = useHousehold();
+  const { activeTab, setActiveTab } = useHousehold();
 
   // Modals state
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
@@ -43,9 +43,9 @@ const MainContent: React.FC = () => {
         {activeTab === 'alerts' && (
           <AlertsCenterView />
         )}
-
-        {/* User Guide: Mobile-first & positioned at the bottom of the page */}
-        <UserGuideFooter />
+        {activeTab === 'guide' && (
+          <UserGuideView />
+        )}
       </main>
 
       {/* Mobile Bottom Bar */}
@@ -64,12 +64,12 @@ const MainContent: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4 text-stone-500">
-            <a
-              href="#guide-utilisateur"
-              className="hover:text-amber-900 font-medium transition-colors"
+            <button
+              onClick={() => setActiveTab('guide')}
+              className="hover:text-amber-900 font-medium transition-colors cursor-pointer"
             >
               Guide utilisateur
-            </a>
+            </button>
             <span aria-hidden="true" className="text-amber-300">·</span>
             <button
               onClick={() => setIsBackupOpen(true)}

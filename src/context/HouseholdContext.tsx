@@ -67,7 +67,7 @@ interface HouseholdContextType extends HouseholdState {
   resetToDefaults: () => void;
 }
 
-const STORAGE_KEY = 'cleanhome_menage_maison_v7_user_exact_8';
+const STORAGE_KEY = 'cleanhome_menage_maison_v9_day_view_clean';
 export const TODAY_STR = '2026-10-20'; // Current application date anchor
 
 const HouseholdContext = createContext<HouseholdContextType | undefined>(undefined);

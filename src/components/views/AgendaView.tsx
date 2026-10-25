@@ -20,7 +20,8 @@ import {
   ChevronRight,
   Filter,
   HelpCircle,
-  Home
+  Home,
+  Repeat,
 } from 'lucide-react';
 import { TaskCleanerModal } from '../modals/TaskCleanerModal';
 import { TaskEditModal } from '../modals/TaskEditModal';
@@ -162,12 +163,13 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
     setSelectedDate,
     toggleTask,
     postponeTask,
+    renewRoutine,
     alerts,
     setActiveTab,
   } = useHousehold();
 
-  // View modes: 'week' (interactive weekly calendar), 'day' (chronological timeline), 'rooms' (grouped by room)
-  const [viewMode, setViewMode] = useState<'week' | 'day' | 'rooms'>('week');
+  // View modes: 'day' (default daily view), 'week' (interactive weekly calendar), 'rooms' (grouped by room)
+  const [viewMode, setViewMode] = useState<'day' | 'week' | 'rooms'>('day');
   
   // Active room filter: 'all' or specific RoomType
   const [activeRoomFilter, setActiveRoomFilter] = useState<RoomType | 'all'>('all');
@@ -178,6 +180,28 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
   const [isCleanerOpen, setIsCleanerOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<ChoreTask | null>(null);
   const [showHowToTest, setShowHowToTest] = useState(true);
+
+  // Navigate day by offset (-1 for previous day, +1 for next day)
+  const handleDayShift = (daysToAdd: number) => {
+    const cur = new Date(selectedDate || TODAY_STR);
+    cur.setDate(cur.getDate() + daysToAdd);
+    setSelectedDate(cur.toISOString().split('T')[0]);
+  };
+
+  const selectedDateFormatted = useMemo(() => {
+    try {
+      const parts = (selectedDate || TODAY_STR).split('-');
+      const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+      const months = [
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+      ];
+      return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    } catch {
+      return selectedDate;
+    }
+  }, [selectedDate]);
 
   // Computed 7-day week schedule based on weekOffset
   const currentWeekDays = useMemo(() => computeWeekDays(weekOffset), [weekOffset]);
@@ -280,13 +304,13 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
         </div>
 
         <div className="flex items-center gap-2 text-xs shrink-0">
-          <a
-            href="#guide-utilisateur"
+          <button
+            onClick={() => setActiveTab('guide')}
             className="px-3.5 py-1.5 rounded-xl bg-amber-100/90 hover:bg-amber-200/90 text-amber-950 font-bold border border-amber-300/70 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <span>📖 Guide & Astuces</span>
-            <span className="text-amber-700">↓</span>
-          </a>
+            <span className="text-amber-700">→</span>
+          </button>
         </div>
       </div>
 
@@ -299,7 +323,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
             <div className="flex items-center gap-2">
               <CalendarIcon className="w-5 h-5 text-amber-600" />
               <h1 className="text-lg font-bold text-stone-900 font-display">
-                Calendrier Hebdomadaire des Corvées
+                {viewMode === 'day' ? 'Planning du Jour' : viewMode === 'week' ? 'Calendrier Hebdomadaire des Corvées' : 'Organisation par Pièce'}
               </h1>
             </div>
             <p className="text-xs text-stone-500 mt-0.5">
@@ -313,6 +337,18 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
             {/* View Mode Switcher */}
             <div className="flex items-center p-1 bg-amber-50/80 border border-amber-200/50 rounded-2xl">
               <button
+                onClick={() => setViewMode('day')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                  viewMode === 'day'
+                    ? 'bg-white text-amber-950 shadow-xs ring-1 ring-amber-300/60'
+                    : 'text-stone-600 hover:text-stone-900'
+                }`}
+              >
+                <LayoutList className="w-3.5 h-3.5 text-amber-600" />
+                <span>Jour</span>
+              </button>
+
+              <button
                 onClick={() => setViewMode('week')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   viewMode === 'week'
@@ -322,18 +358,6 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
               >
                 <CalendarDays className="w-3.5 h-3.5 text-amber-600" />
                 <span>Semaine</span>
-              </button>
-
-              <button
-                onClick={() => setViewMode('day')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                  viewMode === 'day'
-                    ? 'bg-white text-amber-950 shadow-xs ring-1 ring-amber-300/60'
-                    : 'text-stone-600 hover:text-stone-900'
-                }`}
-              >
-                <LayoutList className="w-3.5 h-3.5 text-stone-500" />
-                <span>Jour</span>
               </button>
 
               <button
@@ -581,10 +605,13 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
                                 </span>
 
                                 <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium">
-                                  {task.timeOfDay === 'matin' && <span title="Matin">🌅 Matin</span>}
-                                  {task.timeOfDay === 'apres_midi' && <span title="Après-midi">☀️ A-M</span>}
-                                  {task.timeOfDay === 'soir' && <span title="Soirée">🌙 Soir</span>}
-                                  {task.timeOfDay === 'libre' && <span title="En journée">📋 Jour</span>}
+                                  {task.timeOfDay && task.timeOfDay !== 'libre' && (
+                                    <>
+                                      {task.timeOfDay === 'matin' && <span title="Matin">🌅 Matin</span>}
+                                      {task.timeOfDay === 'apres_midi' && <span title="Après-midi">☀️ A-M</span>}
+                                      {task.timeOfDay === 'soir' && <span title="Soirée">🌙 Soir</span>}
+                                    </>
+                                  )}
                                 </div>
                               </div>
 
@@ -679,153 +706,288 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onOpenAddTask }) => {
         </div>
       )}
 
-      {/* 5. VIEW MODE B: DAY CHRONOLOGICAL TIMELINE */}
+      {/* 5. VIEW MODE: DAY VIEW (AFFICHAGE AU JOUR PAR DÉFAUT) */}
       {viewMode === 'day' && (
         <div className="space-y-4">
           
-          <div className="flex items-center justify-between px-1 bg-white p-4 rounded-2xl border border-slate-200">
-            <div>
-              <h2 className="text-base font-bold text-slate-900 font-display">
-                Programme détaillé du {currentWeekDays.find(d => d.date === selectedDate)?.name || selectedDate}
-              </h2>
-              <p className="text-xs text-slate-500">
-                Organisation chronologique par créneau de la journée
-              </p>
+          {/* Day Navigation & Date Controls Card */}
+          <div className="bg-[#FFFDF9] rounded-2xl p-4 sm:p-5 border border-amber-200/80 shadow-xs space-y-4">
+            
+            {/* Top Row: Navigation Prev / Date / Next */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDayShift(-1)}
+                  title="Jour précédent"
+                  className="p-2 text-stone-700 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 rounded-xl transition-all cursor-pointer flex items-center gap-1 text-xs font-bold"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Jour précédent</span>
+                </button>
+
+                <button
+                  onClick={() => handleDayShift(1)}
+                  title="Jour suivant"
+                  className="p-2 text-stone-700 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 rounded-xl transition-all cursor-pointer flex items-center gap-1 text-xs font-bold"
+                >
+                  <span className="hidden sm:inline">Jour suivant</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Center: Selected Date Name & Badges */}
+              <div className="text-center sm:text-left flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+                <h2 className="text-base sm:text-lg font-bold font-display text-amber-950">
+                  {selectedDateFormatted}
+                </h2>
+                {selectedDate === TODAY_STR && (
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                    Aujourd'hui
+                  </span>
+                )}
+              </div>
+
+              {/* Right: Date Picker & Today Jump */}
+              <div className="flex items-center gap-2 justify-center sm:justify-end">
+                {selectedDate !== TODAY_STR && (
+                  <button
+                    onClick={() => setSelectedDate(TODAY_STR)}
+                    className="px-3 py-1.5 text-xs font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 border border-amber-300 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Aujourd'hui
+                  </button>
+                )}
+
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={e => setSelectedDate(e.target.value)}
+                  className="px-2.5 py-1 text-xs bg-stone-50 border border-stone-200 rounded-xl font-mono text-stone-800 font-semibold cursor-pointer"
+                />
+              </div>
+
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-600 font-mono font-bold bg-slate-100 px-2.5 py-1 rounded-lg">
-                {selectedDateTasks.filter(t => t.completed).length} / {selectedDateTasks.length} accomplies
+
+            {/* Clickable 7-Day Ribbon for Quick Jumping */}
+            <div className="pt-2 border-t border-amber-100">
+              <span className="text-[10px] font-bold text-stone-400 block mb-2 uppercase tracking-wider">
+                Cette semaine (cliquez pour changer de jour) :
               </span>
-              <button
-                onClick={() => setViewMode('week')}
-                className="text-xs font-bold text-indigo-600 hover:text-indigo-800"
-              >
-                ← Retour au calendrier
-              </button>
+              <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                {currentWeekDays.map(day => {
+                  const isSelected = day.date === selectedDate;
+                  const isToday = day.date === TODAY_STR;
+                  const dayTaskCount = filteredTasks.filter(t => t.dueDate === day.date && !t.completed).length;
+
+                  return (
+                    <button
+                      key={day.date}
+                      type="button"
+                      onClick={() => setSelectedDate(day.date)}
+                      className={`p-1.5 sm:p-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                        isSelected
+                          ? 'bg-amber-950 text-white border-amber-950 shadow-xs ring-2 ring-amber-400/30 scale-102'
+                          : isToday
+                          ? 'bg-amber-100/70 border-amber-300 text-stone-800 hover:bg-amber-100'
+                          : 'bg-stone-50/70 border-stone-200/70 text-stone-600 hover:bg-white hover:border-amber-200'
+                      }`}
+                    >
+                      <span className="text-[10px] font-bold uppercase">{day.label}</span>
+                      <span className="text-xs sm:text-sm font-black font-mono">{day.num}</span>
+                      <span className={`text-[9px] px-1 rounded-full mt-0.5 font-bold ${
+                        isSelected 
+                          ? 'bg-amber-800 text-white' 
+                          : dayTaskCount > 0 
+                          ? 'bg-amber-200 text-amber-950' 
+                          : 'text-stone-400'
+                      }`}>
+                        {dayTaskCount > 0 ? `${dayTaskCount}` : '✓'}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+
           </div>
 
+          {/* Subheader: Day Tasks Counter + Add Action */}
+          <div className="flex items-center justify-between px-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-stone-700">
+                Corvées prévues :
+              </span>
+              <span className="text-xs font-mono font-bold bg-amber-100 text-amber-950 px-2 py-0.5 rounded-lg border border-amber-200">
+                {selectedDateTasks.filter(t => !t.completed).length} à faire
+              </span>
+              {selectedDateTasks.filter(t => t.completed).length > 0 && (
+                <span className="text-xs font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                  {selectedDateTasks.filter(t => t.completed).length} terminée(s)
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={onOpenAddTask}
+              className="px-3 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 rounded-xl shadow-2xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>+ Ajouter une corvée ce jour</span>
+            </button>
+          </div>
+
+          {/* Day Tasks List (Unified without artificial time-slot division) */}
           {selectedDateTasks.length === 0 ? (
-            <div className="bg-white rounded-2xl p-12 text-center border border-slate-200/90 shadow-xs">
-              <span className="text-4xl block mb-2">🌿</span>
-              <h3 className="text-base font-bold text-slate-800">Aucune corvée planifiée ce jour</h3>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                Profitez de cette journée tranquille ou ajoutez une mission pour votre maison.
+            <div className="bg-[#FFFDF9] rounded-3xl p-10 sm:p-12 text-center border border-dashed border-amber-300 shadow-xs space-y-3">
+              <span className="text-4xl block">🌿</span>
+              <h3 className="text-base font-bold text-amber-950 font-display">
+                Aucune corvée planifiée pour ce jour
+              </h3>
+              <p className="text-xs text-stone-500 max-w-sm mx-auto">
+                Profitez de cette journée tranquille ou programmez une tâche pour votre foyer.
               </p>
               <button
                 onClick={onOpenAddTask}
-                className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all"
+                className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
               >
-                <Plus className="w-4 h-4" />
-                <span>Planifier une tâche</span>
+                <Plus className="w-3.5 h-3.5" />
+                <span>Planifier une tâche pour cette date</span>
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {TIME_SLOTS.map(slot => {
-                const slotTasks = tasksBySlot[slot.id];
-                if (slotTasks.length === 0) return null;
+            <div className="space-y-3">
+              {selectedDateTasks.map(task => {
+                const theme = ROOM_THEMES[task.room] || ROOM_THEMES.toute_la_maison;
 
                 return (
-                  <div key={slot.id} className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs space-y-3">
-                    
-                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                      <div className="flex items-center gap-2">
-                        {slot.icon}
-                        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                          {slot.label}
-                        </h3>
-                      </div>
-                      <span className="text-[11px] font-mono text-slate-400">
-                        {slotTasks.length} tâche(s)
-                      </span>
-                    </div>
+                  <div
+                    key={task.id}
+                    className={`rounded-2xl border transition-all relative overflow-hidden ${
+                      task.completed
+                        ? 'bg-stone-50/70 border-stone-200 opacity-75'
+                        : `${theme.cardBg} ${theme.cardBorder} shadow-2xs hover:shadow-md`
+                    }`}
+                  >
+                    {/* Room Color Accent Bar (Left 4px) */}
+                    <div className={`absolute top-0 left-0 bottom-0 w-1.5 ${theme.barColor}`} />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {slotTasks.map(task => {
-                        const theme = ROOM_THEMES[task.room] || ROOM_THEMES.toute_la_maison;
+                    <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pl-4">
+                      
+                      {/* Left: Checkbox + Room + Title + Badges */}
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <button
+                          onClick={() => toggleTask(task.id)}
+                          title={task.completed ? 'Marquer comme non fait' : 'Valider la corvée (célébration Chuck Norris !)'}
+                          className="mt-0.5 text-stone-400 hover:text-emerald-600 transition-colors cursor-pointer shrink-0"
+                        >
+                          {task.completed ? (
+                            <CheckCircle2 className="w-6 h-6 text-emerald-600 fill-emerald-100" />
+                          ) : (
+                            <Circle className="w-6 h-6 text-stone-400 hover:text-stone-700" />
+                          )}
+                        </button>
 
-                        return (
-                          <div
-                            key={task.id}
+                        <div className="flex-1 min-w-0 space-y-1">
+                          
+                          {/* Badges line: Room + (Only if explicit time slot !== libre) + Routine + Urgent */}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${theme.badgeBg} ${theme.badgeText}`}>
+                              <span>{theme.icon}</span>
+                              <span>{theme.label}</span>
+                            </span>
+
+                            {/* Time tag ONLY if explicitly set (matin, apres_midi, soir). If 'libre', nothing is shown! */}
+                            {task.timeOfDay && task.timeOfDay !== 'libre' && (
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-700">
+                                {task.timeOfDay === 'matin' && '🌅 Matin'}
+                                {task.timeOfDay === 'apres_midi' && '☀️ Après-midi'}
+                                {task.timeOfDay === 'soir' && '🌙 Soirée'}
+                              </span>
+                            )}
+
+                            {/* Routine Recurrence */}
+                            {task.isRoutine && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-900 border border-purple-300 flex items-center gap-1">
+                                <Repeat className="w-3 h-3 text-purple-700" />
+                                <span>Tous les {task.intervalDays || 15}j</span>
+                              </span>
+                            )}
+
+                            {/* Urgent badge */}
+                            {task.urgent && (
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-rose-500 text-white flex items-center gap-1">
+                                <AlertTriangle className="w-3 h-3" />
+                                <span>URGENT</span>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Task Title */}
+                          <h4
                             onClick={() => setTaskToEdit(task)}
-                            className={`p-3.5 rounded-xl border transition-all relative cursor-pointer ${
-                              task.completed
-                                ? 'bg-slate-50/70 border-slate-200 opacity-80'
-                                : `${theme.cardBg} ${theme.cardBorder} shadow-xs hover:shadow-md`
+                            className={`text-sm sm:text-base font-bold font-display cursor-pointer hover:underline ${
+                              task.completed ? 'line-through text-stone-400' : 'text-stone-900'
                             }`}
                           >
-                            <div className={`absolute top-0 left-0 bottom-0 w-1.5 rounded-l-xl ${theme.barColor}`} />
+                            {task.title}
+                          </h4>
 
-                            <div className="flex items-start gap-3 pl-1">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleTask(task.id);
-                                }}
-                                className="min-w-[40px] min-h-[40px] flex items-center justify-center -ml-1 text-slate-400 hover:text-emerald-600 active:scale-90 transition-transform"
-                              >
-                                {task.completed ? (
-                                  <CheckCircle2 className="w-6 h-6 text-emerald-500 fill-emerald-50" />
-                                ) : (
-                                  <Circle className="w-6 h-6 text-slate-300 hover:text-indigo-500" />
-                                )}
-                              </button>
+                          {/* Description if present */}
+                          {task.description && (
+                            <p className="text-xs text-stone-600 italic">
+                              📝 {task.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
 
-                              <div className="flex-1 min-w-0 pr-2">
-                                <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-0.5">
-                                  <span className={`font-bold px-1.5 py-0.2 rounded ${theme.badgeBg} ${theme.badgeText}`}>
-                                    {theme.icon} {theme.label}
-                                  </span>
-                                </div>
+                      {/* Right: Actions */}
+                      <div className="flex items-center gap-1.5 self-end sm:self-center shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-200/60 justify-end">
+                        
+                        {/* Routine renew */}
+                        {task.isRoutine && (
+                          <button
+                            onClick={() => renewRoutine(task.id)}
+                            title={`Valider et reprogrammer dans ${task.intervalDays || 15} jours`}
+                            className="px-2.5 py-1 text-xs font-bold text-purple-900 bg-purple-100 hover:bg-purple-200 border border-purple-300 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
+                          >
+                            <Repeat className="w-3.5 h-3.5 text-purple-700" />
+                            <span>Renouveler</span>
+                          </button>
+                        )}
 
-                                <h4
-                                  className={`text-sm font-bold text-slate-900 ${
-                                    task.completed ? 'line-through text-slate-400' : ''
-                                  }`}
-                                >
-                                  {task.title}
-                                </h4>
+                        {/* Postpone +1 day */}
+                        <button
+                          onClick={() => postponeTask(task.id, 1)}
+                          title="Reporter au lendemain (+1j)"
+                          className="px-2 py-1 text-xs font-semibold text-stone-700 hover:text-stone-950 bg-white hover:bg-stone-50 border border-stone-200 rounded-xl transition-colors cursor-pointer"
+                        >
+                          +1j
+                        </button>
 
-                                {task.description && (
-                                  <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
-                                    {task.description}
-                                  </p>
-                                )}
+                        {/* Postpone +7 days */}
+                        <button
+                          onClick={() => postponeTask(task.id, 7)}
+                          title="Reporter d'une semaine (+7j)"
+                          className="px-2 py-1 text-xs font-semibold text-stone-700 hover:text-stone-950 bg-white hover:bg-stone-50 border border-stone-200 rounded-xl transition-colors cursor-pointer hidden sm:inline-block"
+                        >
+                          +7j
+                        </button>
 
-                                <div 
-                                  className="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-200/60 text-xs"
-                                  onClick={e => e.stopPropagation()}
-                                >
-                                  <span className="text-[11px] text-slate-400 font-mono">
-                                    Échéance : {task.dueDate}
-                                  </span>
+                        {/* Full Edit Modal button */}
+                        <button
+                          onClick={() => setTaskToEdit(task)}
+                          title="Modifier toutes les informations"
+                          className="px-3 py-1 text-xs font-bold text-white bg-amber-900 hover:bg-amber-950 rounded-xl shadow-2xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>Modifier</span>
+                        </button>
 
-                                  <div className="flex items-center gap-1.5">
-                                    {!task.completed && (
-                                      <button
-                                        onClick={() => postponeTask(task.id, 1)}
-                                        className="text-[11px] font-semibold text-slate-600 hover:text-indigo-600 bg-white px-2 py-0.5 rounded border border-slate-200"
-                                      >
-                                        +1j
-                                      </button>
-                                    )}
+                      </div>
 
-                                    <button
-                                      onClick={() => setTaskToEdit(task)}
-                                      className="p-1 text-slate-400 hover:text-indigo-600 bg-white rounded border border-slate-200"
-                                    >
-                                      <Edit3 className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
                     </div>
-
                   </div>
                 );
               })}

@@ -254,10 +254,10 @@ export const TaskEditModal: React.FC<TaskEditModalProps> = ({ task, isOpen, onCl
                 onChange={e => setTimeOfDay(e.target.value as TimeOfDay)}
                 className="w-full px-2.5 py-1.5 text-xs bg-stone-50 border border-stone-200 rounded-xl font-medium"
               >
+                <option value="libre">📋 Sans préférence horaire (Toute la journée)</option>
                 <option value="matin">🌅 Matin (07h-09h)</option>
                 <option value="apres_midi">☀️ Après-midi (16h-18h)</option>
                 <option value="soir">🌙 Soirée (19h-21h)</option>
-                <option value="libre">📋 Dans la journée / Libre</option>
               </select>
             </div>
 

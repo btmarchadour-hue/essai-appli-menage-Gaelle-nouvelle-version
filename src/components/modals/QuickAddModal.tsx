@@ -36,7 +36,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   const [taskDifficulty, setTaskDifficulty] = useState<TaskDifficulty>('facile');
   const [taskFrequency, setTaskFrequency] = useState<TaskFrequency>('custom_days');
   const [taskDueDate, setTaskDueDate] = useState<string>(selectedDate || TODAY_STR);
-  const [taskTimeOfDay, setTaskTimeOfDay] = useState<TimeOfDay>('matin');
+  const [taskTimeOfDay, setTaskTimeOfDay] = useState<TimeOfDay>('libre');
   const [taskUrgent, setTaskUrgent] = useState(false);
 
   // Routine recurrence parameters
@@ -243,10 +243,10 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 onChange={e => setTaskTimeOfDay(e.target.value as TimeOfDay)}
                 className="w-full px-2.5 py-1.5 text-xs bg-stone-50 border border-stone-200 rounded-xl"
               >
+                <option value="libre">📋 Sans préférence horaire (Toute la journée)</option>
                 <option value="matin">🌅 Matin (07h-09h)</option>
                 <option value="apres_midi">☀️ Après-midi (16h-18h)</option>
                 <option value="soir">🌙 Soirée (19h-21h)</option>
-                <option value="libre">📋 Dans la journée</option>
               </select>
             </div>
           </div>

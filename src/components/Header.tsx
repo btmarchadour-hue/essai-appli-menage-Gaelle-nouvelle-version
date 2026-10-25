@@ -46,6 +46,11 @@ export const Header: React.FC<HeaderProps> = ({
       badge: alerts.length > 0 ? alerts.length : undefined,
       badgeColor: criticalAlertsCount > 0 ? 'bg-rose-500 text-white' : 'bg-amber-500 text-amber-950 font-bold'
     },
+    { 
+      id: 'guide', 
+      label: 'Guide Utilisateur', 
+      icon: <BookOpen className="w-4 h-4" /> 
+    },
   ];
 
   return (
@@ -98,16 +103,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Zone 3: Controls */}
           <div className="flex items-center gap-2 shrink-0">
-            
-            {/* Guide direct link */}
-            <a
-              href="#guide-utilisateur"
-              title="Consulter le Guide d'utilisation"
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-stone-700 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-200/70 rounded-xl transition-colors cursor-pointer"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-amber-700" />
-              <span>Guide</span>
-            </a>
 
             {/* Quick Alert Bell button on mobile */}
             <button

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHousehold } from '../context/HouseholdContext';
 import { ActiveTab } from '../types';
 import { Calendar, CheckSquare, Bell, BookOpen } from 'lucide-react';
 
 export const MobileBottomNav: React.FC = () => {
   const { activeTab, setActiveTab, alerts, criticalAlertsCount, tasks } = useHousehold();
-  const [guideHighlighted, setGuideHighlighted] = useState(false);
 
   const pendingCount = tasks.filter(t => !t.completed).length;
 
@@ -23,16 +22,12 @@ export const MobileBottomNav: React.FC = () => {
       icon: <Bell className="w-5 h-5" />, 
       badge: alerts.length > 0 ? alerts.length : undefined 
     },
+    { 
+      id: 'guide', 
+      label: 'Guide', 
+      icon: <BookOpen className="w-5 h-5" /> 
+    },
   ];
-
-  const handleGuideClick = () => {
-    setGuideHighlighted(true);
-    setTimeout(() => setGuideHighlighted(false), 1500);
-    const el = document.getElementById('guide-utilisateur');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FFFDF9]/95 backdrop-blur-md border-t border-amber-200/70 shadow-[0_-4px_20px_rgba(217,119,6,0.08)]">
@@ -67,26 +62,6 @@ export const MobileBottomNav: React.FC = () => {
             </button>
           );
         })}
-
-        {/* 4th Button: Guide (Thumb-friendly directly to bottom guide) */}
-        <button
-          onClick={handleGuideClick}
-          className={`min-h-[48px] flex flex-col items-center justify-center rounded-xl transition-all relative cursor-pointer active:scale-95 ${
-            guideHighlighted
-              ? 'text-amber-900 font-bold'
-              : 'text-stone-500 hover:text-stone-900 font-medium'
-          }`}
-          title="Consulter le Guide d'utilisation"
-        >
-          <div className={`p-1 rounded-xl relative transition-all ${
-            guideHighlighted ? 'bg-amber-100 text-amber-800 scale-105 shadow-2xs ring-1 ring-amber-300/60' : ''
-          }`}>
-            <BookOpen className="w-5 h-5 text-amber-700" />
-          </div>
-          <span className="text-[11px] tracking-tight mt-0.5 leading-none">
-            Guide
-          </span>
-        </button>
       </div>
     </nav>
   );

@@ -575,13 +575,14 @@ export const TasksManagerView: React.FC<TasksManagerViewProps> = ({ onOpenCreate
                           📅 {dateInfo.text}
                         </span>
 
-                        {/* Time of Day badge */}
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-white/80 border border-stone-200 text-stone-700 shrink-0">
-                          {task.timeOfDay === 'matin' && '🌅 Matin'}
-                          {task.timeOfDay === 'apres_midi' && '☀️ Après-midi'}
-                          {task.timeOfDay === 'soir' && '🌙 Soirée'}
-                          {task.timeOfDay === 'libre' && '📋 En journée'}
-                        </span>
+                        {/* Time of Day badge - only if explicitly specified */}
+                        {task.timeOfDay && task.timeOfDay !== 'libre' && (
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-white/80 border border-stone-200 text-stone-700 shrink-0">
+                            {task.timeOfDay === 'matin' && '🌅 Matin'}
+                            {task.timeOfDay === 'apres_midi' && '☀️ Après-midi'}
+                            {task.timeOfDay === 'soir' && '🌙 Soirée'}
+                          </span>
+                        )}
 
                         {/* Routine recurring badge */}
                         {task.isRoutine && (
@@ -753,10 +754,10 @@ export const TasksManagerView: React.FC<TasksManagerViewProps> = ({ onOpenCreate
                           onChange={e => editTask({ ...task, timeOfDay: e.target.value as TimeOfDay })}
                           className="w-full px-2.5 py-1.5 bg-stone-50 border border-stone-200 rounded-xl font-medium text-stone-800"
                         >
+                          <option value="libre">📋 Sans préférence horaire</option>
                           <option value="matin">🌅 Matin (07h-09h)</option>
                           <option value="apres_midi">☀️ Après-midi (16h-18h)</option>
                           <option value="soir">🌙 Soirée (19h-21h)</option>
-                          <option value="libre">📋 Dans la journée</option>
                         </select>
                       </div>
 
